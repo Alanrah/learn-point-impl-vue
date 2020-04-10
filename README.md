@@ -1,2 +1,24 @@
-# key-point-impl
-平时学习前端时候，遇到的专题或者知识点，手动实现的例子都会上传到这里
+# vue-cli-demo
+
+## Project setup
+```
+yarn install
+```
+
+### Compiles and hot-reloads for development
+```
+yarn serve
+```
+
+### Compiles and minifies for production
+```
+yarn build
+```
+
+### Lints and fixes files
+```
+yarn lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
