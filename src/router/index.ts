@@ -14,9 +14,14 @@ const routes: Array<RouteConfig> = [
             import(/* webpackChunkName: "proxy" */ "../views/proxy.vue")
     },
     {
+        path: "/regexp",
+        component: () =>
+            import(/* webpackChunkName: "regexp" */ "../views/regexp/index.vue")
+    },
+    {
         path: "*",
         component: () =>
-            import(/* webpackChunkName: "proxy" */ "../views/home.vue")
+            import(/* webpackChunkName: "home" */ "../views/home.vue")
     }
 ];
 

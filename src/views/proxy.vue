@@ -4,7 +4,7 @@
 
 <script lang="ts">
 export default {
-    name: "Home",
+    name: "Proxy",
     components: {},
     mounted() {
         const p = new Proxy(
@@ -18,6 +18,7 @@ export default {
                 }
             }
         );
+        // 因为编译报错  所以注释掉
         // console.log(p.b);
     }
 };
