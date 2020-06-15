@@ -19,9 +19,19 @@ const routes: Array<RouteConfig> = [
             import(/* webpackChunkName: "regexp" */ "../views/regexp/index.vue")
     },
     {
+        path: "/offer",
+        // TODO：不加component还不行，难道children必须有父 component？
+        component: () => import(/* webpackChunkName: "sword" */ "../views/sword/index.vue"),
+        children: [
+            {
+                path: '35',
+                component: () => import(/* webpackChunkName: "35" */ "../views/sword/35.vue")
+            }
+        ],
+    },
+    {
         path: "*",
-        component: () =>
-            import(/* webpackChunkName: "home" */ "../views/home.vue")
+        component: () => import(/* webpackChunkName: "home" */ "../views/home.vue")
     }
 ];
 
