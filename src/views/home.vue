@@ -3,6 +3,7 @@
         <router-link to="/proxy">Proxy示例</router-link> <br />
         <router-link to="/regexp">正则表达式示例</router-link><br />
         <router-link to="/offer">剑指offer题目</router-link><br />
+        <router-link to="/ts">ts题目</router-link><br />
         <router-view></router-view>
     </div>
 </template>

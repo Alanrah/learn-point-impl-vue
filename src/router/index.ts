@@ -20,12 +20,21 @@ const routes: Array<RouteConfig> = [
     },
     {
         path: "/offer",
-        // TODO：不加component还不行，难道children必须有父 component？
         component: () => import(/* webpackChunkName: "sword" */ "../views/sword/index.vue"),
         children: [
             {
                 path: '35',
                 component: () => import(/* webpackChunkName: "35" */ "../views/sword/35.vue")
+            }
+        ],
+    },
+    {
+        path: "/ts",
+        component: () => import(/* webpackChunkName: "ts" */ "../views/ts/index.vue"),
+        children: [
+            {
+                path: 'infer',
+                component: () => import(/* webpackChunkName: "infer" */ "../views/ts/infer.vue")
             }
         ],
     },
