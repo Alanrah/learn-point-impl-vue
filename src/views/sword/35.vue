@@ -3,9 +3,8 @@
         <a href="https://www.nowcoder.com/practice/96bd6684e04a44eb80e6a68efc0ec6c5?tpId=13&&tqId=11188&rp=1&ru=/activity/oj&qru=/ta/coding-interviews/question-ranking">
             原题目链接
         </a>
-        <p>在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一个数组,求出这个数组中的逆序对的总数P。并将P对1000000007取模的结果输出。 即输出P%1000000007</p>
         <p>考核的知识点：</p>
-        <p>1、1000000007</p>
+        <p>1、归并排序</p>
         <p>1、1000000007</p>
     </div>
 </template>
@@ -13,10 +12,12 @@
 <script lang="ts">
 let cnt = 0;
 function merge(a: number[], start: number, mid: number, end: number) {
+    // 这种小copy[] 和全局一个 copy[data.length-1]，差不多？？？
     const copy = new Array(end - start + 1);
     let i = start;
     let j = mid + 1;
     let k = 0;
+    // 看到有人推荐从 i=mid-1 j=end开始向前遍历，其实效率一样……不懂为啥
     while (i <= mid && j <= end) {
         if (a[i] <= a[j]) {
             copy[k++] = a[i++];
@@ -25,6 +26,7 @@ function merge(a: number[], start: number, mid: number, end: number) {
             cnt += mid - i + 1;
         }
     }
+    // console.log(copy);
 
     while (i <= mid) {
         copy[k++] = a[i++];
@@ -38,23 +40,16 @@ function merge(a: number[], start: number, mid: number, end: number) {
 }
 
 function divide(arr: number[], start: number, end: number) {
-    //递归的终止条件
     if (start >= end) {
         return;
     }
-
     //计算中间值，注意溢出
-    const i = start;
-    const j = end;
-    const mid = i + Math.ceil((j - i) / 2);
-    console.log(i, j, mid)
-
-    //递归分
-    divide(arr, i, mid);
-    divide(arr, mid + 1, j);
-
+    const mid = start + Math.floor((end - start) / 2);
+    //递归分 分到最小长度为1或者2的数组，开始merge  所以merge后的每个数组都是有序的
+    divide(arr, start, mid);
+    divide(arr, mid + 1, end);
     //治
-    merge(arr, i, mid, j);
+    merge(arr, start, mid, end);
 }
 
 function InversePairs(data: number[]) {
@@ -62,7 +57,6 @@ function InversePairs(data: number[]) {
     if (!data.length) {
         return 0;
     }
-    console.log(data.length - 1)
     divide(data, 0, data.length - 1);
     return cnt % 1000000007;
 
@@ -85,7 +79,7 @@ export default {
     name: "offer-35",
     components: {},
     mounted: function () {
-        // const a = InversePairs([1, 2, 3, 4, 6, 4, 5, 0]);
+        const a = InversePairs([1, 2, 3, 4, 5, 6, 7, 0]);
         console.log(a)
     }
 };
