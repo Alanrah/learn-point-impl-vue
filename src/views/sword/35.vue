@@ -87,10 +87,3 @@ export default {
     }
 };
 </script>
-<style lang="stylus" scoped>
-a
-    font-weight bold
-    color #fff
-a.router-link-exact-active
-    color #42b983
-</style>

@@ -28,6 +28,12 @@ const routes: Array<RouteConfig> = [
             },{
                 path: '36',
                 component: () => import(/* webpackChunkName: "36" */ "../views/sword/36.vue")
+            },{
+                path: '37',
+                component: () => import(/* webpackChunkName: "37" */ "../views/sword/37.vue")
+            },{
+                path: '38',
+                component: () => import(/* webpackChunkName: "38" */ "../views/sword/38.vue")
             }
         ],
     },
