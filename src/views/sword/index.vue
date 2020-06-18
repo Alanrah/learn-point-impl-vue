@@ -1,7 +1,8 @@
 <template>
     <div class="home">剑指offer 35-67 刷题<br />
-        <router-link to="/offer/35">35 </router-link>
-        <router-view to="/offer/36">36</router-view>
+        <router-link to="/offer/35">35</router-link>
+        <router-link to="/offer/36">36</router-link>
+        <router-view class="offer-view"></router-view>
     </div>
 
 </template>
