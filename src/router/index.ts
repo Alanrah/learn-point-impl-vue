@@ -39,7 +39,16 @@ const routes: Array<RouteConfig> = [
                 component: () => import(/* webpackChunkName: "39" */ "../views/sword/39.vue")
             },{
                 path: '40',
-                component: () => import(/* webpackChunkName: "39" */ "../views/sword/40.vue")
+                component: () => import(/* webpackChunkName: "40" */ "../views/sword/40.vue")
+            },{
+                path: '41',
+                component: () => import(/* webpackChunkName: "41" */ "../views/sword/41.vue")
+            },{
+                path: '42',
+                component: () => import(/* webpackChunkName: "42" */ "../views/sword/42.vue")
+            },{
+                path: '43',
+                component: () => import(/* webpackChunkName: "43" */ "../views/sword/43.vue")
             }
         ],
     },

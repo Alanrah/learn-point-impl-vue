@@ -6,6 +6,9 @@
         <router-link to="/offer/38">38</router-link><br />
         <router-link to="/offer/39">39</router-link><br />
         <router-link to="/offer/40">40</router-link><br />
+        <router-link to="/offer/41">41</router-link><br />
+        <router-link to="/offer/42">42</router-link><br />
+        <router-link to="/offer/43">43</router-link><br />
         <router-view class="offer-view"></router-view>
     </div>
 
