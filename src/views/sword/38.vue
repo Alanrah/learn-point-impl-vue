@@ -9,16 +9,44 @@
     this.left = null;
     this.right = null;
 } */
-function TreeDepth(pRoot)
-{
-    // write code here
+const pRoot = {
+    val: 1,
+    left: {
+        val: 1,
+        left: {
+            val: 2
+        },
+        right: {
+            val: 1,
+            left: {
+                val: 2
+            },
+            right: {
+                val: 3,
+            }
+        }
+    },
+    right: {
+        val: 3,
+    }
+}
+function TreeDepth(pRoot) {
+    if (!pRoot) {
+        return 1;
+    }
+    const leftTree = pRoot.left;
+    const rightTree = pRoot.right;
+    if (leftTree || rightTree || pRoot.val) {
+        return 1 + (TreeDepth(leftTree) > TreeDepth(rightTree) ? TreeDepth(leftTree) : TreeDepth(rightTree));
+    }
+    return TreeDepth(leftTree) > TreeDepth(rightTree) ? TreeDepth(leftTree) : TreeDepth(rightTree);
 }
 
 export default {
-    name: "offer-36",
+    name: "offer-38",
     components: {},
     mounted: function () {
-        console.log(TreeDepth());
+        console.log(TreeDepth(pRoot));
     }
 };
 </script>

@@ -10,6 +10,7 @@ function GetNumberOfK(data, k) {
         if (map.get(e)) {
             let cnt = map.get(e);
             map.set(e, ++cnt);
+            // map.set(e, ++map.get(e));  map.get(e)是个常量  cnt是个变量
         } else {
             map.set(e, 1);
         }
@@ -21,7 +22,7 @@ function GetNumberOfK(data, k) {
 }
 
 export default {
-    name: "offer-36",
+    name: "offer-37",
     components: {},
     mounted: function () {
         console.log(GetNumberOfK([1,2,3,4,5,6,7,8,9,5,4,5,5,5], 5));

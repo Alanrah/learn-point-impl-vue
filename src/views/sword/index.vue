@@ -4,6 +4,8 @@
         <router-link to="/offer/36">36</router-link><br />
         <router-link to="/offer/37">37</router-link><br />
         <router-link to="/offer/38">38</router-link><br />
+        <router-link to="/offer/39">39</router-link><br />
+        <router-link to="/offer/40">40</router-link><br />
         <router-view class="offer-view"></router-view>
     </div>
 
@@ -23,4 +25,5 @@ export default {
     height 100vh
     background rgba(0, 0, 0, 0.8)
     color rgba(255, 255, 255, 0.9)
+    text-align left
 </style>
