@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "proto": "pbjs -t json-module -w commonjs -o src/proto/protoJS/proto.js  src/proto/protoJS/*.proto"
   },
   "dependencies": {
     "core-js": "^3.6.4",
@@ -27,10 +28,12 @@
     "@vue/cli-service": "~4.3.0",
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^5.0.2",
+    "axios": "^0.19.2",
     "eslint": "^6.7.2",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-vue": "^6.2.2",
     "prettier": "^1.19.1",
+    "protobufjs": "^6.9.0",
     "typescript": "~3.8.3",
     "vue-template-compiler": "^2.6.11"
   },

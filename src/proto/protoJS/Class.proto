@@ -1,0 +1,7 @@
+package school;
+syntax = "proto3";
+// 0、1、2、3这几个数字是这三个字段的唯一标识符，这些标识符是用来在消息的二进制格式中识别各个字段的，一旦开始使用就不能够再改变
+message PBClass {
+    uint64 classId = 0;
+    string name = 1;
+}
