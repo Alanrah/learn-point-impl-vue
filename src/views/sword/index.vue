@@ -9,6 +9,7 @@
         <router-link to="/offer/41">41</router-link><br />
         <router-link to="/offer/42">42</router-link><br />
         <router-link to="/offer/43">43</router-link><br />
+        <router-link to="/offer/44">44</router-link><br />
         <router-view class="offer-view"></router-view>
     </div>
 

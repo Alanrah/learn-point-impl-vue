@@ -49,6 +49,9 @@ const routes: Array<RouteConfig> = [
             },{
                 path: '43',
                 component: () => import(/* webpackChunkName: "43" */ "../views/sword/43.vue")
+            },{
+                path: '44',
+                component: () => import(/* webpackChunkName: "44" */ "../views/sword/44.vue")
             }
         ],
     },

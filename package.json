@@ -9,6 +9,7 @@
     "proto": "pbjs -t json-module -w commonjs -o src/proto/protoJS/proto.js  src/proto/protoJS/*.proto"
   },
   "dependencies": {
+    "@vue/composition-api": "^1.0.0-beta.1",
     "core-js": "^3.6.4",
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",
