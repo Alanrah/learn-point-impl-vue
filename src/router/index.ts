@@ -66,6 +66,10 @@ const routes: Array<RouteConfig> = [
         ],
     },
     {
+        path: "/editor",
+        component: () => import(/* webpackChunkName: "editor" */ "../views/quill-editor/index.vue"),
+    },
+    {
         path: "*",
         component: () => import(/* webpackChunkName: "home" */ "../views/home.vue")
     }
