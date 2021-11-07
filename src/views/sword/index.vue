@@ -12,6 +12,7 @@
         <router-link to="/offer/44">44</router-link>
         <router-view class="offer-view"></router-view>
         <router-link to="/offer/JZ-23"> JZ-23 </router-link>
+        <router-link to="/offer/all"> all </router-link>
     </div>
 
 </template>
