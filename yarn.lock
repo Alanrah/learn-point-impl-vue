@@ -1498,12 +1498,12 @@
   optionalDependencies:
     prettier "^1.18.2"
 
-"@vue/composition-api@^1.0.0-beta.1":
-  version "1.0.5"
-  resolved "https://registry.nlark.com/@vue/composition-api/download/@vue/composition-api-1.0.5.tgz?cache=0&sync_timestamp=1627797814439&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40vue%2Fcomposition-api%2Fdownload%2F%40vue%2Fcomposition-api-1.0.5.tgz#c7cef457284096e75cc0894e0cb9a251f91eba3f"
-  integrity sha1-x870VyhAludcwIlODLmiUfkeuj8=
+"@vue/composition-api@^1.3.3":
+  version "1.3.3"
+  resolved "https://registry.npmmirror.com/@vue/composition-api/download/@vue/composition-api-1.3.3.tgz#a782f2d40e41d4cbb6b4550692c7e01d2182d457"
+  integrity sha1-p4Ly1A5B1Mu2tFUGksfgHSGC1Fc=
   dependencies:
-    tslib "^2.3.0"
+    tslib "^2.3.1"
 
 "@vue/eslint-config-prettier@^6.0.0":
   version "6.0.0"
@@ -2026,12 +2026,12 @@ aws4@^1.8.0:
   resolved "https://registry.npm.taobao.org/aws4/download/aws4-1.11.0.tgz?cache=0&sync_timestamp=1604101230105&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Faws4%2Fdownload%2Faws4-1.11.0.tgz#d61f46d83b2519250e2784daf5b09479a8b41c59"
   integrity sha1-1h9G2DslGSUOJ4Ta9bCUeai0HFk=
 
-axios@^0.21.1:
-  version "0.21.1"
-  resolved "https://registry.npm.taobao.org/axios/download/axios-0.21.1.tgz?cache=0&sync_timestamp=1608609188013&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Faxios%2Fdownload%2Faxios-0.21.1.tgz#22563481962f4d6bde9a76d516ef0e5d3c09b2b8"
-  integrity sha1-IlY0gZYvTWvemnbVFu8OXTwJsrg=
+axios@^0.24.0:
+  version "0.24.0"
+  resolved "https://registry.npmmirror.com/axios/download/axios-0.24.0.tgz?cache=0&sync_timestamp=1635214915083&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Faxios%2Fdownload%2Faxios-0.24.0.tgz#804e6fa1e4b9c5288501dd9dff56a7a0940d20d6"
+  integrity sha1-gE5voeS5xSiFAd2d/1anoJQNINY=
   dependencies:
-    follow-redirects "^1.10.0"
+    follow-redirects "^1.14.4"
 
 babel-code-frame@^6.22.0:
   version "6.26.0"
@@ -4143,7 +4143,7 @@ extend-shallow@^3.0.0, extend-shallow@^3.0.2:
     assign-symbols "^1.0.0"
     is-extendable "^1.0.1"
 
-extend@^3.0.1, extend@^3.0.2, extend@~3.0.2:
+extend@^3.0.2, extend@~3.0.2:
   version "3.0.2"
   resolved "https://registry.nlark.com/extend/download/extend-3.0.2.tgz#f8b1136b4071fbd8eb140aff858b1019ec2915fa"
   integrity sha1-+LETa0Bx+9jrFAr/hYsQGewpFfo=
@@ -4388,10 +4388,15 @@ flush-write-stream@^1.0.0:
     inherits "^2.0.3"
     readable-stream "^2.3.6"
 
-follow-redirects@^1.0.0, follow-redirects@^1.10.0:
+follow-redirects@^1.0.0:
   version "1.14.1"
   resolved "https://registry.nlark.com/follow-redirects/download/follow-redirects-1.14.1.tgz?cache=0&sync_timestamp=1620555300559&other_urls=https%3A%2F%2Fregistry.nlark.com%2Ffollow-redirects%2Fdownload%2Ffollow-redirects-1.14.1.tgz#d9114ded0a1cfdd334e164e6662ad02bfd91ff43"
   integrity sha1-2RFN7Qoc/dM04WTmZirQK/2R/0M=
+
+follow-redirects@^1.14.4:
+  version "1.14.5"
+  resolved "https://registry.npmmirror.com/follow-redirects/download/follow-redirects-1.14.5.tgz#f09a5848981d3c772b5392309778523f8d85c381"
+  integrity sha1-8JpYSJgdPHcrU5Iwl3hSP42Fw4E=
 
 for-in@^1.0.2:
   version "1.0.2"
@@ -7418,15 +7423,15 @@ quill-delta@^3.6.2:
     extend "^3.0.2"
     fast-diff "1.1.2"
 
-quill@1.3.6:
-  version "1.3.6"
-  resolved "https://registry.npm.taobao.org/quill/download/quill-1.3.6.tgz#99f4de1fee85925a0d7d4163b6d8328f23317a4d"
-  integrity sha1-mfTeH+6FkloNfUFjttgyjyMxek0=
+quill@^1.3.7:
+  version "1.3.7"
+  resolved "https://registry.nlark.com/quill/download/quill-1.3.7.tgz#da5b2f3a2c470e932340cdbf3668c9f21f9286e8"
+  integrity sha1-2lsvOixHDpMjQM2/NmjJ8h+Shug=
   dependencies:
     clone "^2.1.1"
     deep-equal "^1.0.1"
     eventemitter3 "^2.0.3"
-    extend "^3.0.1"
+    extend "^3.0.2"
     parchment "^1.1.4"
     quill-delta "^3.6.2"
 
@@ -8689,10 +8694,10 @@ tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0:
   resolved "https://registry.nlark.com/tslib/download/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha1-zy04vcNKE0vK8QkcQfZhni9nLQA=
 
-tslib@^2.3.0:
-  version "2.3.0"
-  resolved "https://registry.nlark.com/tslib/download/tslib-2.3.0.tgz#803b8cdab3e12ba581a4ca41c8839bbb0dacb09e"
-  integrity sha1-gDuM2rPhK6WBpMpByIObuw2ssJ4=
+tslib@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.nlark.com/tslib/download/tslib-2.3.1.tgz#e8a335add5ceae51aa261d32a490158ef042ef01"
+  integrity sha1-6KM1rdXOrlGqJh0ypJAVjvBC7wE=
 
 tslint@^5.20.1:
   version "5.20.1"
