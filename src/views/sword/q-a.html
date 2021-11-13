@@ -1,0 +1,245 @@
+<!-- 1 文字是什么颜色 -->
+<!-- <style> 
+    .classA { color: blue; } 
+    .classB { color: red; }
+</style>
+<p class="classB classA" > hello </p> -->
+<!-- 红色，标签颜色与class属性的顺序无关，与class在style标签中声明的顺序有关 -->
+
+
+<!-- 2.如下代码展示的时候在加上position属性和未加入position属性的时候，分别会怎么显示 -->
+<!-- <style>
+p {
+  background: red;
+  color: #000;
+  position: absolute;
+}
+</style>
+<div>
+    <span>11111</span>
+    <p>2222</p>
+    <span>3333</span> 
+</div> -->
+<!-- 有position的时候，1111 3333 同一行；黑字白底。2222 一行，没有position的时候，1111一行，黑字白底；2222 一行，黑字红底，3333 一行，黑字白底。 position absolute/fixed，默认 top right这些是auto，absolute 元素会被移出正常文档流，并不为元素预留空间，通过指定元素相对于最近的非 static 定位祖先元素的偏移，来确定元素位置。 -->
+
+<!-- 3. margin 合并 -->
+<!-- <div class="a"></div>
+<div class="b"></div>
+<style>
+    .a {
+        width: 100px;
+        height: 100px;
+        margin: 10px;
+        /* border: 1px solid #fff; 没用 */
+    }
+    .b {
+        width: 100px;
+        height: 100px;
+        margin: 20px;
+        /* border: 1px solid #fff; 没用 */
+        /* padding-top: 30px; 没用*/
+        }
+</style> -->
+<!-- a b 兄弟元素，之间的margin距离是20px，父子结构的元素，垂直方向上的margin，会取最大那个。可以通过触发 bfc 解决，也可以把这个特性作为 feature -->
+<!-- BFC：Block Formatting Context，块状格式化上下文，https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Block_formatting_context
+IFC：Inline Formatting Context，内联格式化上下文，https://developer.mozilla.org/zh-CN/docs/Web/CSS/Inline_formatting_context ，行内格式化上下文是一个网页的渲染结果的一部分。其中，各行内框（inline boxes）一个接一个地排列，一个行内框（inline box）被分割到多行中时， margins, borders, 以及 padding 的设定均不会在断裂处生效。
+FFC：Flex Formatting Contexts，自适应格式化上下文，display值为flex或者inline-flex的元素将会生成自适应容器（flex container）
+GFC：GridLayout Formatting Contexts，网格布局格式化上下文，当为一个元素设置display值为grid的时候，此元素将会获得一个独立的渲染区域 -->
+
+<!-- 4 父子元素 margin 塌陷问题 -->
+<!-- <style>
+    .c {
+        width: 100px;
+        height: 100px;
+        margin: 10px;
+        /* border: 1px solid #fff; 父元素加border 有用 */
+        /* padding-top: 10px; 父元素加 padding-top 有用 */
+    }
+    .d {
+        width: 100px;
+        height: 100px;
+        margin: 20px;
+        /* border: 1px solid #fff;子元素加border 没用 */
+        /* padding-top: 30px; 子元素加 padding-top 没用*/
+        }
+</style>
+<div class="c">
+    <div class="d"></div>
+</div>
+解决办法：1.给父元素添加border 或者 padding；2.触发bfc(块级格式上下文),改变父级的渲染规则，给父级添加 (1)position:absolute/fixed; (2)display:inline-block;(3)float:left/right;(4)overflow:hidden;等，详见：https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Block_formatting_context -->
+
+
+<!-- 
+5.页面上100个li, 实现点击li能console.log里面的内容
+<ul>
+  <li>1</li><li>2<li>...<li>100</li>
+</ul>
+冒泡（bubbling）：当一个事件发生在一个元素上，它会首先运行在该元素上的处理程序，然后运行其父元素上的处理程序，然后一直向上到其他祖先上的处理程序。几乎 所有事件都会冒泡，但是focus 事件不会冒泡；
+停止向上冒泡的方式 event.stopPropagation()；停止向上和同级事件冒泡的方式：event.stopImmediatePropagation() 方法，阻止当前元素上的处理程序运行。使用该方法之后，其他处理程序就不会被执行
+捕获： 事件（从 Window）向下走近元素，应用场景 ele.addEventListener(event, handler, capture),capture 默认是false，也就是在冒泡阶段设置处理程序运行handler，若为true，就是在捕获阶段处理程序
+先向下捕获，后向上冒泡，https://zh.javascript.info/bubbling-and-capturing -->
+
+
+<!-- 6.有如下dom结构，要求仅补充style中的部分实现如下布局;a. img与p是横向排列在div中，相距10px;b. p的宽度随着div的宽度变化而自适应变化;c. 要求给出至少两种实现 -->
+<!-- <style>
+        img {
+            width: 100px;
+            height: 100px;
+
+        }
+        div {
+            border: 1px solid;
+            margin: 10px;
+            padding: 10px;
+            /* 方案2 */
+            display: flex;
+        }
+        /* 方案1 */
+        /* p {
+            display: inline-block;
+            margin: 0px;
+            margin-left: 10px;
+            width: calc(100% - 122px)
+        } */
+        /* 方案2 */
+        p {
+            flex: 1
+        }
+
+    </style>
+    <div>
+        <img
+            class="profile"
+            src="https://ali.static.yximgs.com/udata/pkg/cloudcdn/i/logo.ade3814.svg"
+        >
+        <p class="content">
+            此处有无数多的内容
+        </p>
+    </div> -->
+
+<!-- 7 one two 哪个div在z轴的上面 -->
+<!-- 示例1
+<div class="one"></div> 下层
+<div class="two"></div> 上层
+<style>
+.one {
+  width: 100px;
+  height: 100px;
+  z-index: 5;
+  background-color: red;
+  opacity: 0.9;
+  position: absolute/relative;  //可以让z-index 5 生效 
+}
+.two {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  top: -50px;
+  z-index: 3;
+  background-color: blue;
+}
+</style>
+示例2
+<div class="parent">
+    <div class="three"></div> 
+    <div class="four"></div>
+</div>
+
+<style>
+.parent {
+    display: flex;
+}
+.three {
+  width: 100px;
+  height: 100px;
+  z-index: 5;
+  background-color: red;
+  opacity: 0.9;
+  /* position: relative;  可以让z-index 5 生效*/ 
+}
+.four {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  left: -10px;
+  z-index: 3;
+  background-color: blue;
+}
+</style>
+层叠上下文的形成条件：https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context ；由position、flex容器的子元素、grid容器的子元素、opacity属性值小于1的元素等属性触发 -->
+
+<!-- 8.如何实现内容高度不够时footer吸底的效果 -->
+<!-- <div class="parent">
+    <div class="child1"></div> 
+    <div class="child2"></div>
+</div>
+<style>
+/* 方法1 */
+.page-footer {
+    position: fixed;
+}
+@media screen and (max-height: 928px) {
+    .page-footer {
+        position: relative; // 高度小于928时候生效
+    }
+}
+/* 方法2 */
+.parent {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height : 100vh;
+}
+.child1{
+    width: 100px;
+    height: 100px;
+    background-color: blue;
+}
+.child2{
+    width: 100px;
+    height: 100px;
+    background-color: red;
+}
+</style> -->
+
+
+<!-- 9.画宽度为 deviceWidth 的正方形(css，布局、盒模型)
+<style>
+.e{
+    width: 50%;
+    padding-bottom: 50%;
+}
+</style> -->
+
+
+
+
+<!-- 10 输入 url 到页面展现发生了什么：主要考察网络和渲染 -->
+
+
+<!-- 
+11 percentage 的参照元素属性
+padding percent ，percent 是相对于包含块的宽度，以百分比值为内边距。
+margin  percent ，percent 是相对于包含块的宽度，以百分比值为外边距。
+width percent 使用外层元素的容纳区块宽度（the containing block's width）的百分比定义宽度。
+<style>
+    .outer {
+    width: 100px;
+    height: 200px;
+    background: red;
+    }
+
+    .inner {
+    /* 子元素大小为父元素宽度一半的正方形 */
+    /* width: 50%;
+    padding-bottom: 50%; */
+    /* 子元素大小为父元素一半。宽高都是一半 */
+    /* width: 50%;
+    height : 50%; */
+    background: blue;
+    }
+
+</style>
+<div class="outer">
+    <div class="inner"></div>
+</div> -->
