@@ -1,5 +1,17 @@
+<script lang="ts">
+import LoadingBar from './views/components/loading-bar/loading-bar.vue';
+
+export default {
+    name: "app",
+    components: {LoadingBar},
+    mounted() {
+
+    }
+};
+</script>
 <template>
     <div id="app">
+        <LoadingBar></LoadingBar>
         <router-view />
     </div>
 </template>

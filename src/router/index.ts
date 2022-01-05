@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
-
+import eventBus from '../views/components/loading-bar/event-bus';
 Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
@@ -17,6 +17,11 @@ const routes: Array<RouteConfig> = [
         path: "/regexp",
         component: () =>
             import(/* webpackChunkName: "regexp" */ "../views/regexp/index.vue")
+    },
+    {
+        path: "/index/fadein",
+        component: () =>
+            import(/* webpackChunkName: "fadein" */ "../views/index-img-fade-in.vue")
     },
     {
         path: "/offer",
@@ -88,5 +93,14 @@ const router = new VueRouter({
     base: process.env.BASE_URL,
     routes
 });
+router.beforeResolve(async (to, from, next) => {
+    eventBus.$emit('set-loading', true);
+    next();
+});
+
+router.afterEach(() => {
+    eventBus.$emit('set-loading', false);
+});
+
 
 export default router;
