@@ -122,11 +122,65 @@ Array(10).fill(1).forEach(() => {
 
 
 
-// 实现简易版redux	
+// 实现简易版redux
 
 
-// 实现 debounce / throttle	
+// 实现 debounce / throttle
+// 防抖 debounce 和节流 throttle
 
+/*
+优化用户体验：适时反馈，避免 UI 渲染阻塞，浏览器卡顿
+    提升页面性能：避免页面渲染卡顿，减少服务器压力，防范恶意触发
+防抖的应用场景有以下几个方面：
+    输入框内容联想 --> 适时反馈、减少服务器压力
+    window.resize --> 避免 UI 渲染阻塞，浏览器卡顿
+    提交表单 --> 减少服务器压力，防范恶意触发
+    scroll、mouseOver等事件
+    有助于server实现幂等校验
+*/
+
+/*
+防抖是为了避免用户无意间执行函数多次,通过防抖可以在事件触发一定时间后没有再次触发同一事件时，再去执行相关的处理函数。
+在事件被触发n秒后再执行回调，如果在这n秒内又被触发，则重新计时。
+*/
+function debounce(fn, wait) {
+    let timerId = null;
+    let leadingTimerId = null;
+    return function(...args) {
+      if (timerId) {
+        clearTimeout(timerId);
+        clearTimeout(leadingTimerId);
+
+        timerId = setTimeout(() => {
+          fn.call(this, false, args);
+          leadingTimerId = setTimeout(() => {
+            timerId = null;
+          }, wait);
+        }, wait);
+      } else {
+        fn.call(this, true, args);
+        // 为了解决只触发一次，会同时触发首次触发和延时触发的问题引入的特殊值
+        timerId = -1;
+      }
+    };
+  }
+
+  /* 节流：每隔一段时间，只执行一次函数。
+  */
+  function throttle(fn, delay) {
+      var timer;
+      return function () {
+          var _this = this;
+          var args = arguments;
+          if (timer) {
+              return;
+          }
+          timer = setTimeout(function () {
+              fn.apply(_this, args);
+              timer = null; // 在delay后执行完fn之后清空timer，此时timer为假，throttle触发可以进入计时器
+          }, delay)
+      }
+  }
 
 // 实现一个 dialog		考点：
 // 1. prop / event设计
@@ -139,7 +193,7 @@ Array(10).fill(1).forEach(() => {
 // 快速幂 / leftPad
 
 
-// 两个有序数组的中位数		
+// 两个有序数组的中位数
 
 
 
@@ -196,7 +250,7 @@ Array(10).fill(1).forEach(() => {
 // 考点：padding计算 flex grid
 
 
-// 实现一个Promise			
+// 实现一个Promise
 
 
 // infinite scroll，可分为使用框架or不使用框架
@@ -221,7 +275,7 @@ Array(10).fill(1).forEach(() => {
 
 
 
-// 实现一个 Tree Select			
+// 实现一个 Tree Select
 
 
 // 迅速给浏览器种cookie
