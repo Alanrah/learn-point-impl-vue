@@ -1,7 +1,8 @@
 ## where
 数据库中常用的是where关键字，用于在初始表中筛选查询，获取指定记录。它是一个约束声明，用于约束数据，在返回结果集之前起作用。
 
-## group by 
+## 分组数据 group by 
+### 创建分组
 分组，对select查询出来的结果集按照一个或多个列对结果集进行分组。，获得一组组的集合，然后从每组中取出一个指定字段或者表达式的值。在分组的列上我们可以使用 COUNT, SUM, AVG,等函数。
 ```SQL
     SELECT column_name, function(column_name)
@@ -14,12 +15,22 @@
 ```SQL
     SELECT coalesce(name, '总数'), SUM(signin) as signin_count FROM  employee_tbl GROUP BY name WITH ROLLUP;
 ```
+* GROUP BY子句可以包含任意数目的列。这使得能对分组进行嵌套， 为数据分组提供更细致的控制。
+* 如果在GROUP BY子句中嵌套了分组，数据将在最后规定的分组上 进行汇总。换句话说，在建立分组时，指定的所有列都一起计算(所以不能从个别的列取回数据)。
+* GROUP BY子句中列出的每个列都必须是检索列或有效的表达式(但不能是聚集函数)。如果在SELECT中使用表达式，则必须在 GROUP BY子句中指定相同的表达式。不能使用别名。
+* 除聚集计算语句外，SELECT语句中的每个列都必须在GROUP BY子 句中给出。
+* 如果分组列中具有NULL值，则NULL将作为一个分组返回。如果列 中有多行NULL值，它们将分为一组。
+* GROUP BY子句必须出现在WHERE子句之后，ORDER BY子句之前。
 
-## having
+### 过滤分组 having
+```SQL
+    SELECT cust_id, count(*) as orders from orders groupby cust_id having count(*) > 2;
+```
 用于对where和group by查询出来的分组经行过滤，查出满足条件的分组结果。它是一个过滤声明，是在查询返回结果集以后对查询结果进行的过滤操作。
+MySQL为此目的提供了另外的子 句，那就是HAVING子句。HAVING非常类似于WHERE。事实上，目前为止所 学过的所有类型的WHERE子句都可以用HAVING来替代。唯一的差别是 WHERE过滤行，而HAVING过滤分组。WHERE在数据 分组前进行过滤，HAVING在数据分组后进行过滤。
 
 ## 执行顺序
-select –>where –> group by–> having–>order by
+select -> from –> where –> group by –> having –> order by -> limit
 
 ## 大小写
 mysql默认不区分大小写，可以通过 binaer关键字指定;
@@ -218,7 +229,7 @@ load data infile；
 ```SQL
     select prod_name, quantity, item_price,  quantity * item_price as expanded_price from products order by prod_name = 'test'; --该商品的
 ```
-## 数据处理函数（MYSQL必知必会-第11章）
+## 数据处理函数（MYSQL必知必会-第11章） https://forta.com/books/0672327120/
 
 ```SQL
     select prod_name, Upper(prod_name) from products; --转换成大写
@@ -260,4 +271,82 @@ MySQL使用的日期格式。无论你什么时候指定一个日期，不管是
     select avg(distinct prod_price) from products where vend_id = 1003;
 ```
 
-## 分组数据
+## 订单数据库
+本节示例的数据库描述：该数据库表是关系表。
+vendors表：存储销售产品的供应商
+|  列   |  说明   |
+|  ----  |  ----  |
+| vend_id | 唯一的供应商ID，自动增量的主键  |
+| vend_name | 供应商名  |
+| vend_address | 供应商的地址   |
+| vend_city | 供应商的城市 |
+| vend_state | 供应商的州  |
+| vend_zip | 供应商的邮政编码  |
+| vend_country | 供应商的国家  |
+
+products 表：包含产品目录，每行一个产品
+|  列   |  说明   |
+|  ----  |  ----  |
+| prod_id | 唯一的产品ID   |
+| vend_id | 产品供应商ID(关联到vendors表中的vend_id)  |
+| prod_name | 产品名  |
+| prod_price | 产品价格 |
+| prod_desc | 产品描述  |
+
+customers 表：存储所有顾客的信息
+|  列   |  说明   |
+|  ----  |  ----  |
+|  cust_id | 唯一的顾客ID，自动增量的主键   |
+|  cust_name | 顾客名  |
+|  cust_address   |   顾客的地址  |
+|  cust_city   |   顾客的城市  |
+|  cust_state   |   顾客的州  |
+|  cust_zip   |   顾客的邮政编码  |
+|  cust_country   |   顾客的国家  |
+|  cust_contact   |   顾客的联系名  |
+|  cust_email   |   顾客的联系email地址  |
+      
+orders 表：储顾客订单(但不是订单细节)。每个订单唯一地编号 (order_num列)。订单用cust_id列(它关联到customer表的顾客唯一ID)与相应的顾客关联。
+|  列   |  说明   |
+|  ----  |  ----  |
+|  order_num | 唯一订单号，自动增量的主键   |
+|  order_date | 订单日期  |
+|  cust_id   |   订单的顾客ID，(关系到customers表的 cust_id)  |
+
+orderitems 表：存储每个订单中的实际物品，每个订单的每个物品占一行。order_num和order_item作为其主键，prod_id上定义外键，关联它到products 的prod_id。
+|  列   |  说明   |
+|  order_num    |  订单号(关联到orders表的order_num)    |
+|  order_item    |  订单物品号(在某个订单中的顺序)   |
+|  prod_id   |   产品ID(关联到products表的prod_id)   |
+|  quantity   |   物品数量   |
+|  item_price   |   物品价格   |
+
+productnotes表：存储与特定产品有关的注释。并非所有产品都有相 关的注释，而有的产品可能有许多相关的注释。列note_text必须为FULLTEXT搜索进行索引，由于这个表使用全文本搜索，因此必须指定ENGINE=MyISAM。
+|  列   |  说明   |
+|  note_id    |  唯一注释ID，主键   |
+|  prod_id    |  产品ID(对应于products表中的prod_id)   |
+|  note_date    |  增加注释的日期   |
+|  note_text    |  注释文本   |
+  
+## 子查询
+示例1：列出订购物品 TNT2 的所有客户
+```SQL
+    select * from customers where cust_id in
+        (select cust_id from orders where order_num in
+            (select order_num from orderitems where  prod_id = 'TNT2'));
+```
+在SELECT语句中，子查询总是从内向外处理。子查询一般用 IN  操作符结合使用，但是也可以用于测试 = <> 等。
+
+示例2：需要显示 customers 表中每个客户的订单总数。
+```SQL
+    -- 相关子查询：涉及外部查询的子查询。任何时候只要列名可能有多义性，就必须使用这种语法。
+    -- 需要比较这两个列以正确地把订单与它们相应的顾客匹配，新生成了计算字段 orders
+    select cust_name, (select count(*) from orders where orders.cust_id = customers.cust_id） as orders from customers order by cust_name;
+    -- todo
+    select cust_name, cust_id, (select cust_id, count(*) as order_num from orders group by cust_id）as orderss  from customers order by cust_name;
+```
+
+## 联结表
+
+
+
