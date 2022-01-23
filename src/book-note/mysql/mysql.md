@@ -1,7 +1,11 @@
+## 安装
+mac：去官网下载安装包，安装
+安装 -> 系统偏好设置 –> 点击最下方mysql  start mysql server   /usr/local/MySQL/bin/mysql -u root -p *******zyr
+
 ## where
 数据库中常用的是where关键字，用于在初始表中筛选查询，获取指定记录。它是一个约束声明，用于约束数据，在返回结果集之前起作用。
 
-## 分组数据 group by 
+## 分组数据 group by
 ### 创建分组
 分组，对select查询出来的结果集按照一个或多个列对结果集进行分组。，获得一组组的集合，然后从每组中取出一个指定字段或者表达式的值。在分组的列上我们可以使用 COUNT, SUM, AVG,等函数。
 ```SQL
@@ -46,7 +50,7 @@ select prod_name from products WHERE prod_name REGEXP BINARY 'JetPack .000'
 ```
 以下是在表 students 中的实例:将 id 为 5 的手机号改为默认的 - : 
 ```SQL
-update students set tel=default where id=5;
+    update students set tel=default where id=5;
 ```
 将所有人的年龄增加 1: 
 ```SQL
@@ -111,31 +115,84 @@ select prod_name from products where prod_name like '1000' order by prod_name; -
 select prod_name from products where prod_name regexp '1000' order by prod_name;  -- 返回 JetPack 1000
 ```
 
-## UNION 语句
-用于将不同表中相同列中查询的数据展示出来；（不包括重复数据）；MySQL UNION 操作符用于连接两个以上的 SELECT 语句的结果组合到一个结果集合中。多个 SELECT 语句会删除重复的数据。使用形式如下：
+## 组合查询 UNION
+有两种基本情况，其中需要使用组合查询:
+* 在单个查询中从不同的表返回类似结构的数据;
+* 对单个表执行多个查询，按单个查询返回数据。
+用于将不同表中相同列中查询的数据展示出来；（不包括重复数据）；
+MySQL UNION 操作符用于连接两个以上的 SELECT 语句的结果组合到一个结果集合中。多个 SELECT 语句会删除重复的数据。使用形式如下：
 ```SQL
-SELECT 列名称 FROM 表名称 UNION SELECT 列名称 FROM 表名称 ORDER BY 列名称；
+    -- SELECT 列名称 FROM 表名称 UNION SELECT 列名称 FROM 表名称 ORDER BY 列名称；
+    -- 查询价格小于等于5的所有物品的一个列表
+    select vend_id, prod_name, prod_price from products where prod_price <= 5 union select vend_id, prod_name, prod_price from products where vend_id in (1001, 1002) order by prod_price;
+    select vend_id, prod_name, prod_price from products where prod_price <= 5 or vend_id in (1001, 1002) order by prod_price;
 ```
-UNION DISTINCT: 可选，删除结果集中重复的数据。默认情况下 UNION 操作符已经删除了重复数据，所以 DISTINCT 修饰符对结果没啥影响。UNION ALL: 可选，返回所有结果集，包含重复数据；
+UNION DISTINCT: 可选，删除结果集中重复的数据。默认情况下 UNION 操作符已经删除了重复数据，所以 DISTINCT 修饰符对结果没啥影响。
+UNION ALL: 可选，返回所有结果集，包含重复数据；
+* UNION必须由两条或两条以上的SELECT语句组成，语句之间用关键字UNION分隔(因此，如果组合4条SELECT语句，将要使用3个 UNION关键字)。
+* UNION中的每个查询必须包含相同的列、表达式或聚集函数(不过各个列不需要以相同的次序列出)。
+* 列数据类型必须兼容:类型不必完全相同，但必须是DBMS可以隐含地转换的类型(例如，不同的数值类型或不同的日期类型)。
 
 ## order by
 对查询结果进行排序，DESC 降序，ASC 升序； 默认情况下，它是按升序排列。
 
-## inner join（内连接,或等值连接）
+## 联结表 join
+通过外键联结
+### 创建联结
+```SQL
+    ---在引用的列可能出现二义性时，必须使用完 全限定列名(用一个点分隔的表名和列名)。应该保证所有联结都有WHERE子句
+    select vend_name, prod_name, prod_price from vendors, products where vendors.vend_id = products.vend_id order by vend_name, prod_name;
+    -- 与上一句效果相同，内联结（等值联结）
+    select vend_name, prod_name, prod_price from vendors inner join products on vendors.vend_id = products.vend_id order by vend_name, prod_name;
+    ---笛卡儿积(cartesian product) 由没有联结条件的表关系返回的结果为笛卡儿积。检索出的行的数目将是第一个表中的行数乘 以第二个表中的行数。
+    select vend_name, prod_name, prod_price from vendors, products order by vend_name, prod_name;
+    -- 显示编号为20005的订单中的物品
+    select vend_name, prod_name, prod_price, quantity from vendors, orderitems, products where vendors.vend_id = products.vend_id and orderitems.prod_id = products.prod_id and order_num = 20005;
+```
+### inner join（内连接,或等值连接）
 获取两个表中字段匹配关系的记录。连接以上两张表来读取runoob_tbl表中所有runoob_author字段在tcount_tbl表对应的runoob_count字段值，
 ```SQL
-SELECT a.runoob_id, a.runoob_author, b.runoob_count FROM runoob_tbl a INNER JOIN tcount_tbl b ON a.runoob_author = b.runoob_author; 
+    SELECT a.runoob_id, a.runoob_author, b.runoob_count FROM runoob_tbl a INNER JOIN tcount_tbl b ON a.runoob_author = b.runoob_author; 
 ```
 两个表的交集。
-## left join （左连接）
+### 自连接
+```SQL
+    --找出商品ID为DTNTR的供应商的所有商品，使用别名
+    select prod_id, prod_name from products where vend_id = (select vend_id from products where prod_id = 'DTNTR');
+    -- 👇🏻
+    select p1.prod_id, p1.prod_name from products as p1, products as p2  where p1.vend_id = p2.vend_id and p2.prod_id = 'DTNTR';
+```
+### 自然联结
+标准的联结(前一章中介绍的内部联结)返回所有数据，甚至相同的列多次出现。
+自然联结排除多次出现，使每个列只返回一次。
+```SQL
+    -- 在这个例子中，通配符只对第一个表使用。所有其他列明确列出，所以没有重复的列被检索出来。
+    select c.*, o.order_num, o.order_date, oi.prod_id, oi.quantity, oi.item_price from customers as c, orders as o, orderitems as oi where c.cust_id = o.cust_id and oi.order_num = o.order_num and prod_id = 'fb';
+```
+### 外部联结
+联结包含了那些在相关表中没有关联行的行。这种类型的联结称为外部联结。
+```SQL
+    -- 检索所有客户及其订单 --> 内部联结
+    select customers.cust_id, orders.order_num from customers inner join orders on customers.cust_id = orders.cust_id;
+    -- 检索所有客户，包括那些没有订单的客户，不存在的会显示null --> 内部联结
+    select customers.cust_id, orders.order_num from customers left outer join orders on customers.cust_id = orders.cust_id;
+```
+#### 外部联结 -- left join （左连接）
 获取左表所有记录，即使右表没有对应匹配的记录。返回坐标所有数据和左右表的交集数据；
-## right join （右连接）
+#### 外部联结 -- right join （右连接）
  与 LEFT JOIN 相反，用于获取右表所有记录，即使左表没有对应匹配的记录。
+### 带聚集函数的联结
+```SQL
+    -- 检索所有客户及每个客户所下的订单数
+    select customers.cust_id, customers.cust_name, count(orders.order_num) as num_ord from customers inner join orders on customers.cust_id = orders.cust_id group by customers.cust_id;
+    -- 检索所有客户及每个客户所下的订单数,包括那些没有订单的客户
+    select customers.cust_id, customers.cust_name, count(orders.order_num) as num_ord from customers left outer join orders on customers.cust_id = orders.cust_id group by customers.cust_id;
+```
 
 ## null 处理
 在 MySQL 中，NULL 值与任何其它值的比较（即使是 NULL）永远返回 NULL，即 NULL = NULL 返回 NULL 。MySQL 中处理 NULL 使用 IS NULL 和 IS NOT NULL 运算符。
 ```SQL
-SELECT * from runoob_test_tbl WHERE runoob_count IS NOT NULL;
+    SELECT * from runoob_test_tbl WHERE runoob_count IS NOT NULL;
 ```
 
 ## 事务 transaction 
@@ -229,7 +286,8 @@ load data infile；
 ```SQL
     select prod_name, quantity, item_price,  quantity * item_price as expanded_price from products order by prod_name = 'test'; --该商品的
 ```
-## 数据处理函数（MYSQL必知必会-第11章） https://forta.com/books/0672327120/
+## 数据处理函数（MYSQL必知必会-第11章） 
+https://forta.com/books/0672327120/
 
 ```SQL
     select prod_name, Upper(prod_name) from products; --转换成大写
@@ -334,6 +392,8 @@ productnotes表：存储与特定产品有关的注释。并非所有产品都�
     select * from customers where cust_id in
         (select cust_id from orders where order_num in
             (select order_num from orderitems where  prod_id = 'TNT2'));
+    select * from customers, orders, orderitems where customers.cust_id = orders.cust_id and orderitems.order_num = orders.order_num and prod_id = 'TNT2';
+        
 ```
 在SELECT语句中，子查询总是从内向外处理。子查询一般用 IN  操作符结合使用，但是也可以用于测试 = <> 等。
 
@@ -341,12 +401,48 @@ productnotes表：存储与特定产品有关的注释。并非所有产品都�
 ```SQL
     -- 相关子查询：涉及外部查询的子查询。任何时候只要列名可能有多义性，就必须使用这种语法。
     -- 需要比较这两个列以正确地把订单与它们相应的顾客匹配，新生成了计算字段 orders
-    select cust_name, (select count(*) from orders where orders.cust_id = customers.cust_id） as orders from customers order by cust_name;
-    -- todo
-    select cust_name, cust_id, (select cust_id, count(*) as order_num from orders group by cust_id）as orderss  from customers order by cust_name;
+    select cust_name, (select count(*) from orders where orders.cust_id = customers.cust_id) as orders from customers order by cust_name;
+    
+    select cust_name, (select count(*) as order_num from orders where orders.cust_id = customers.cust_id group by cust_name) as orderss  from customers order by cust_name;
 ```
+* 第一句                          第二句
++----------------+--------+ |     +----------------+---------+
+| cust_name      | orders | |    | cust_name      | orderss |
++----------------+--------+ |    +----------------+---------+
+| Coyote Inc.    |      2 | |    | Coyote Inc.    |       2 |
+| E Fudd         |      1 | |    | E Fudd         |       1 |
+| Mouse House    |      0 | |    | Mouse House    |    NULL |
+| Wascals        |      1 | |    | Wascals        |       1 |
+| Yosemite Place |      1 | |    | Yosemite Place |       1 |
++----------------+--------+      +----------------+---------+
 
-## 联结表
+## 全文本搜索
+MySQL 支持几种基本的数据库引擎。并非所有的引擎都支持本书所描述的全文本搜索。两个最常使用的引擎为MyISAM和InnoDB， 前者支持全文本搜索，而后者不支持。这就是为什么虽然本书 中创建的多数样例表使用InnoDB，而有一个样例表(productnotes表)却使用MyISAM的原因。
+LIKE关键字，它利用通配操作符匹配文本(和部分文 本)。使用LIKE，能够查找包含特殊值或部分值的行。
+正则表达式基于文本的搜索，作为匹配列值的更进一步的介绍。使用正则表达式，可以编写查找所需行的非常复杂的匹配模 式。
+虽然这些搜索机制非常有用，但存在几个重要的限制：
+* 性能——通配符和正则表达式匹配通常要求MySQL尝试匹配表中所有行(而且这些搜索极少使用表索引)。因此，由于被搜索行数不断增加，这些搜索可能非常耗时。
+* 明确控制——使用通配符和正则表达式匹配，很难(而且并不总是能)明确地控制匹配什么和不匹配什么。例如，指定一个词必 须匹配，一个词必须不匹配，而一个词仅在第一个词确实匹配的 情况下才可以匹配或者才可以不匹配。
+* 智能化的结果——虽然基于通配符和正则表达式的搜索提供了非 常灵活的搜索，但它们都不能提供一种智能化的选择结果的方法。 例如，一个特殊词的搜索将会返回包含该词的所有行，而不区分 包含单个匹配的行和包含多个匹配的行(按照可能是更好的匹配 来排列它们)。类似，一个特殊词的搜索将不会找出不包含该词但 包含其他相关词的行。
+在使用 全文本搜索时，MySQL不需要分别查看每个行，不需要分别分析和处理每个词。MySQL创建指定列中各词的一个索引，搜索可以针对这些词进行。这样，MySQL可以快速有效地决定哪些词匹配(哪些行包含它们)，哪些词不匹配，它们匹配的频率，等等。
+
+为了进行全文本搜索，必须索引被搜索的列，而且要随着数据的改 变不断地重新索引。在对表列进行适当设计后，MySQL会自动更新所有的索引和重新索引。
+在索引之后，SELECT可与Match()和Against()一起使用以实际执行 搜索。
+### 启用全文本搜索支持
+创建table的时候，对需要搜索的列添加 FULLTEXT。为了进行全文本搜索， MySQL根据子句FULLTEXT(note_text)的指示对它进行索引。这里的FULLTEXT索引单个列，如果需要也可以指定多个列。在定义之后，MySQL自动维护该索引。在增加、更新或删除行时，索引随之自动更新。
+```SQL
+    CREATE TABLE productnotes
+    (
+    note_id    int           NOT NULL AUTO_INCREMENT,
+    prod_id    char(10)      NOT NULL,
+    note_date datetime       NOT NULL,
+    note_text  text          NULL ,
+    PRIMARY KEY(note_id),
+    FULLTEXT(note_text)
+    ) ENGINE=MyISAM;
+```
+注意：不要在导入数据时使用FULLTEXT 更新索引要花时间，虽然不是很多，但毕竟要花时间。如果正在导入数据到一个新表， 此时不应该启用FULLTEXT索引。应该首先导入所有数据，然后再修改表，定义FULLTEXT。这样有助于更快地导入数据(而且使索引数据的总时间小于在导入每行时分别进行索引所需的总时间)。
+### 进行全文本搜索
 
 
 
