@@ -2,6 +2,12 @@
 mac：去官网下载安装包，安装
 安装 -> 系统偏好设置 –> 点击最下方mysql  start mysql server   /usr/local/MySQL/bin/mysql -u root -p *******zyr
 
+## mysql引擎
+* InnoDB是一个可靠的事务处理引擎(参见第26章)，它不支持全文本搜索;
+* MEMORY在功能等同于MyISAM，但由于数据存储在内存(不是磁盘)中，速度很快(特别适合于临时表);
+* MyISAM是一个性能极高的引擎，它支持全文本搜索(参见第18章)，但不支持事务处理。
+* 混用引擎类型。
+
 ## where
 数据库中常用的是where关键字，用于在初始表中筛选查询，获取指定记录。它是一个约束声明，用于约束数据，在返回结果集之前起作用。
 
@@ -39,11 +45,11 @@ select -> from –> where –> group by –> having –> order by -> limit
 ## 大小写
 mysql默认不区分大小写，可以通过 binaer关键字指定;
 ```SQL
-select prod_name from products WHERE prod_name REGEXP BINARY 'JetPack .000'
+select prod_name from products WHERE prod_name REGEXP BINARY 'JetPack .000';
 ```
 ## and / or
 
-## update
+## 更新数据 update
 语句可用来修改表中的数据, 简单来说基本的使用形式为
 ```SQL
     update 表名称 set 列名称=新值 where 更新条件;
@@ -58,7 +64,7 @@ select prod_name from products WHERE prod_name REGEXP BINARY 'JetPack .000'
 ```
 将手机号为 13288097888 的姓名改为 "小明", 年龄改为 19: 
 ```SQL
-    update students setname="小明", age=19 where tel="13288097888";
+    update students set name="小明", age=19 where tel="13288097888";
 ```
 当我们需要将字段中的特定字符串批量修改为其他字符串时，可已使用以下操作：
 ```SQL
@@ -68,6 +74,7 @@ select prod_name from products WHERE prod_name REGEXP BINARY 'JetPack .000'
 ```SQL
     UPDATE runoob_tbl SET runoob_title = REPLACE(runoob_title, 'C++', 'Python') where runoob_id = 3;
 ```
+
 ## delete
 删除 MySQL 数据表中的记录，
 ## delete，drop，truncate
@@ -75,6 +82,9 @@ select prod_name from products WHERE prod_name REGEXP BINARY 'JetPack .000'
 * 1、delete 和 truncate 仅仅删除表数据，drop 连表数据和表结构一起删除，打个比方，delete 是单杀，truncate 是团灭，drop 是把电脑摔了。
 * 2、delete 是 DML 语句，操作完以后如果没有不想提交事务还可以回滚，truncate 和 drop 是 DDL 语句，操作完马上生效，不能回滚，打个比方，delete 是发微信说分手，后悔还可以撤回，truncate 和 drop 是直接扇耳光说滚，不能反悔。
 * 3、执行的速度上，drop>truncate>delete，打个比方，drop 是神舟火箭，truncate 是和谐号动车，delete 是自行车。
+```SQL
+   delete from customers where cust_id = 10086;
+```
 
 ## like
 匹配/模糊匹配，会与 % 和 _ 结合使用。SQL LIKE 子句中使用百分号 %字符来表示任意字符，类似于UNIX或正则表达式中的星号 *。如果没有使用百分号 %, LIKE 子句与等号 = 的效果是一样的。将 runoob_tbl 表中获取 runoob_author 字段中以 COM 为结尾的的所有记录：
@@ -197,6 +207,23 @@ UNION ALL: 可选，返回所有结果集，包含重复数据；
 
 ## 事务 transaction 
 主要用于处理操作量大，复杂度高的数据；在 MySQL 中只有使用了 Innodb 数据库引擎的数据库或表才支持事务。事务处理可以用来维护数据库的完整性，保证成批的 SQL 语句要么全部执行，要么全部不执行。事务用来管理 insert,update,delete 语句一般来说，事务是必须满足4个条件（ACID）：：原子性（Atomicity，或称不可分割性）、一致性（Consistency）、隔离性（Isolation，又称独立性）、持久性（Durability）。
+* 事务(transaction)指一组SQL语句;
+* 回退(rollback)指撤销指定SQL语句的过程;
+* 提交(commit)指将未存储的SQL语句结果写入数据库表;
+* 保留点(savepoint)指事务处理中设置的临时占位符(place-holder)，你可以对它发布回退(与回退整个事务处理不同)。
+```SQL
+    start transaction;
+    set autocommit = 0; --不自动提交更改
+    operation ZZZ;
+    rollback; -- 直接回滚
+    operations XXX;
+    savepoint A;
+    operations YYY;
+    commit;
+    rollback to A;
+    savepoint B;
+    release savepoint B; --删除指定savepoint
+```
 
 ## alter
 （add 新增列、drop 删除列、modify 修改列类型、change 修改列名称、alter 修改字段默认值、rename 修改表名） 
@@ -229,6 +256,11 @@ ALTER TABLE testalter_tbl ENGINE = MYISAM;
 ```SQL
 ALTER TABLE testalter_tbl RENAME TO alter_tbl;
 ```
+定义外键：
+```SQL
+ALTER TABLE orderitems add constraint fk_orderitems_orders foreign key(order_num) references orders (order_num);
+```
+
 ## index 索引
 索引可以大大提高MySQL的检索速度；索引分单列索引和组合索引。单列索引，即一个索引只包含单个列，一个表可以有多个单列索引，但这不是组合索引。组合索引，即一个索引包含多个列。实际上，索引也是一张表，该表保存了主键与索引字段，并指向实体表的记录。上面都在说使用索引的好处，但过多的使用索引将会造成滥用。因此索引也会有它的缺点：虽然索引大大提高了查询速度，同时却会降低更新表的速度，如对表进行INSERT、UPDATE和DELETE。因为更新表时，MySQL不仅要保存数据，还要保存一下索引文件。建立索引会占用磁盘空间的索引文件。
 ```SQL
@@ -373,14 +405,16 @@ orders 表：储顾客订单(但不是订单细节)。每个订单唯一地编�
 
 orderitems 表：存储每个订单中的实际物品，每个订单的每个物品占一行。order_num和order_item作为其主键，prod_id上定义外键，关联它到products 的prod_id。
 |  列   |  说明   |
-|  order_num    |  订单号(关联到orders表的order_num)    |
-|  order_item    |  订单物品号(在某个订单中的顺序)   |
-|  prod_id   |   产品ID(关联到products表的prod_id)   |
-|  quantity   |   物品数量   |
-|  item_price   |   物品价格   |
+|  ----  |  ----  |
+|  order_num  |  订单号(关联到orders表的order_num) |
+|  order_item  |  订单物品号(在某个订单中的顺序) |
+|  prod_id  |  产品ID(关联到products表的prod_id) |
+|  quantity  |  物品数量 |
+|  item_price  |  物品价格 |
 
 productnotes表：存储与特定产品有关的注释。并非所有产品都有相 关的注释，而有的产品可能有许多相关的注释。列note_text必须为FULLTEXT搜索进行索引，由于这个表使用全文本搜索，因此必须指定ENGINE=MyISAM。
 |  列   |  说明   |
+|  ----  |  ----  |
 |  note_id    |  唯一注释ID，主键   |
 |  prod_id    |  产品ID(对应于products表中的prod_id)   |
 |  note_date    |  增加注释的日期   |
@@ -442,7 +476,180 @@ LIKE关键字，它利用通配操作符匹配文本(和部分文 本)。使用L
     ) ENGINE=MyISAM;
 ```
 注意：不要在导入数据时使用FULLTEXT 更新索引要花时间，虽然不是很多，但毕竟要花时间。如果正在导入数据到一个新表， 此时不应该启用FULLTEXT索引。应该首先导入所有数据，然后再修改表，定义FULLTEXT。这样有助于更快地导入数据(而且使索引数据的总时间小于在导入每行时分别进行索引所需的总时间)。
+
 ### 进行全文本搜索
+在索引之后，使用两个函数Match()和Against()执行全文本搜索，其中Match()指定被搜索的列，Against()指定要使用的搜索表达式。
+传递给Match()的值必须与FULLTEXT()定义中的相同。如果指定多个列，则必须列出它们(而且次序正确)。
+```SQL
+    select note_text from productnotes where note_te like '%rabit%';
+    select note_text from productnotes where note_te REGEXP BINARY 'rabit';
+    select note_text from productnotes where match(note_text) against('rabit'); -- 全文本搜索的一个重要部分就是对结果排序。具有较高等级的行先返回
+    -- todo
+    select note_text, match(note_text) against('rabit') as rank from productnotes; -- 所有行都被返回(因为没有WHERE子句),Match()和Against() 用来建立一个计算列(别名为rank)，此列包含全文本搜索计算出的等级值。等级由MySQL根据行中词的数目、唯一词的数目、整个索引中词的总数以及包含该词的行的数目计算出来。正如所见，不包含词rabbit的行等级为0(因此不被前一例子中的WHERE子句选择)。确实包含词rabbit 的两个行每行都有一个等级值，文本中词靠前的行的等级值比词靠后的行的等级值高。
+```
+全文本搜索提供了简单LIKE搜索不能提供的功能。而且，由于数据是索引的，全文本搜索还相当快。
+### 使用查询扩展
+查询扩展用来设法放宽所返回的全文本搜索结果的范围。在使用查询扩展时，MySQL对数据和索引进行两遍扫描来完成搜索:
+* 首先，进行一个基本的全文本搜索，找出与搜索条件匹配的所有 行;
+* 其次，MySQL检查这些匹配行并选择所有有用的词(我们将会简要地解释MySQL如何断定什么有用，什么无用)。
+* 再其次，MySQL再次进行全文本搜索，这次不仅使用原来的条件， 而且还使用所有有用的词。
+```SQL
+    select note_text from productnotes where match(note_text) against('anvils');
+    select note_text from productnotes where match(note_text) against('anvils' with query expansion) ; --这次返回了7行。第一行包含词anvils，因此等级最高。第二行与anvils无关，但因为它包含第一行中的两个词(customer和recommend)，所以也被检索出来。第3行也包含这两个相同的词，但它们在文本中的位置更靠后且分开得更远，因此也包含这一行，但等级为第三。第三行确实也没有涉及anvils(按它们的产品名)。
+```
+### 布尔文本搜索
+```SQL
+    select note_text from productnotes where match(note_text) against('anvils -rope*' in boolean mode); -- 匹配包含anvils但不包含任意以rope开始的词的行
+```
+全文本布尔操作符
+|  全文本布尔操作符  |   说 明  |
+|  ----  |  ----  |
+|  +   |  包含，词必须存在  |  
+|  -   |  排除，词必须不出现  |  
+|  >   |  包含，而且增加等级值  |  
+|  <   |  包含，且减少等级值  |  
+|  ()   |  把词组成子表达式(允许这些子表达式作为一个组被包含、排除、排列等)  |  
+|  ~   |  取消一个词的排序值  |  
+|  *   |  词尾的通配符  |  
+|  ""   |  定义一个短语(与单个词的列表不一样，它匹配整个短语以便包含或排除这个短语)  |  
+
+## 视图 view
+视图是虚拟的表。与包含数据的表不一样，视图只包含使用时动态检索数据的查询。
+```SQL
+    select * from customers, orders, orderitems where customers.cust_id = orders.cust_id and orderitems.order_num = orders.order_num and prod_id = 'TNT2';              
+```
+此查询用来检索订购了某个特定产品的客户。任何需要这个数据的人都必须理解相关表的结构，并且知道如何创建查询和对表进行联结。 为了检索其他产品(或多个产品)的相同数据，必须修改最后的WHERE子句。
+现在，假如可以把整个查询包装成一个名为productcustomers的虚拟表，则可以如下轻松地检索出相同的数据:
+```SQL
+    select * from productcustomers where prod_id = 'TNT2';              
+```
+productcustomers是一个视图，作为视图，它不包含表中应该有的任何列或数据，它包含的是一个SQL查询(与上面用以正确联结表的相同的查询)。
+视图应用场景：
+* 重用SQL语句。
+* 简化复杂的SQL操作。在编写查询后，可以方便地重用它而不必知道它的基本查询细节。
+* 使用表的组成部分而不是整个表。
+* 保护数据。可以给用户授予表的特定部分的访问权限而不是整个表的访问权限。
+* 更改数据格式和表示。视图可返回与底层表的表示和格式不同的数据。
+在视图创建之后，可以用与表基本相同的方式利用它们。可以对视图执行SELECT操作，过滤和排序数据，将视图联结到其他视图或表，甚至能添加和更新数据。
+视图仅仅是用来查看存储在别处的数据的一种设施。视图本身不包含数据，因此它们返回的数据是从其他表中检索出来的。在添加或更改这些表中的数据时，视图将返回改变过的数据。
+
+视图的规则和限制：
+* 与表一样，视图必须唯一命名(不能给视图取与别的视图或表相同的名字)。
+* 对于可以创建的视图数目没有限制。
+* 为了创建视图，必须具有足够的访问权限。这些限制通常由数据库管理人员授予。
+* 视图可以嵌套，即可以利用从其他视图中检索数据的查询来构造一个视图。
+* ORDER BY可以用在视图中，但如果从该视图检索数据SELECT中也含有ORDER BY，那么该视图中的ORDER BY将被覆盖。
+* 视图不能索引，也不能有关联的触发器或默认值。
+* 视图可以和表一起使用。例如，编写一条联结表和视图的SELECT语句。
+```SQL
+    -- 创建视图 create view viewname as sql语句;
+    create view productcustomers as select * from customers, orders, orderitems where customers.cust_id = orders.cust_id and orderitems.order_num = orders.order_num ;
+    -- 显示视图语句
+    show create view viewname;
+    -- 删除视图
+    drop view;
+    -- 更新视图，并非所有视图都是可更新的，视图中有分组查询、子查询、联结、并、聚集函数、distinct、导出操作的，不能那个更新
+    create or replace view viewname as XXX;
+```
+
+## 存储过程
+存储过程简单来说，就是为以后的使用而保存的一条或多条MySQL语句的集合。可将其视为批文件，虽然它们的作用不仅限于批处理。
+使用存储过程有3个主要的好处，即简单、安全、高性能。
+### 创建存储过程
+```SQL
+    -- 返回产品平均价格的存储过程
+    create procedure productpricing() 
+    begin 
+        select avg(prod_price) as proceaverage from products;
+    end;
+    -- 传参版本，出参
+    create procedure productpricing(
+        out pl decimal(8,2),
+        out ph decimal(8,2),
+        out pa decimal(8,2),
+    ) 
+    begin 
+        select min(prod_price) into pl from products;
+        select max(prod_price) into ph from products;
+        select avg(prod_price) into pa from products;
+    end;
+    -- 入参版本
+    create procedure ordertotal(
+        in onumber int,
+        out ototal decimal(8,2),
+    ) 
+    begin 
+        select sum(item_price * quantity) from orderitems where order_num = onumber into ototal;
+    end;
+    -- 调用
+    call ordertotal(20005, @total);
+    select  @total;
+```
+此存储过程名为 productpricing，用CREATE PROCEDURE productpricing()语句定义。如果存储过程接受参数，它们将在()中列举出来。此存储过程没有参数，但后跟的()仍然需要。BEGIN和END语句用来限定存储过程体，过程体本身仅是一个简单的SELECT语句。
+### 执行存储过程
+CALL接受存储过程的名字以及需要传递给它的任意参数。
+```SQL
+    call productpricing(@pricelow, @pricehigh, @priceaverage); --所有MySQL变量都必须以@开始
+    select @priceaverage;
+```
+执行名为productpricing的存储过程，它计算并返回产品的最低、最高和平均价格。
+### 删除存储过程
+存储过程在创建之后，被保存在服务器上以供使用，直至被删除。
+```SQL
+    drop procedure productpricing if exists;
+```
+
+## 使用游标 cursor
+不像多数DBMS，MySQL游标只能用于 存储过程(和函数)。
+游标用DECLARE语句创建(参见第23章)。DECLARE命名游标，并定义相应的SELECT语句，根据需要带WHERE和其他子句。例如，下面的语句定义了名为ordernumbers的游标，使用了可以检索所有订单的SELECT语句：
+```SQL
+    -- 穿件游标
+    create procedure processorders()
+    begin
+        declare ordernumbers cursor
+        for
+        select order_num from orders;
+    end;
+    -- 打开游标
+    open ordernumbers;
+    -- 关闭游标
+    close ordernumbers;
+```
+存储过程处理完成后，游标就消失(因为它局限于存储过程)。
+CLOSE释放游标使用的所有内部内存和资源，因此在每个游标 不再需要时都应该关闭。
+
+## 触发器
+触发器是MySQL响应以下任意语句而自动执行的一条MySQL语句(或位于BEGIN和END语句之间的一组语句):
+* DELETE;
+* INSERT;
+* UPDATE。
+其他MySQL语句不支持触发器。
+每个表每个事件每次只允许一个触发器。因此，每个表最多支持6个触发器(每条INSERT、UPDATE 和DELETE的之前和之后)。
+在创建触发器时，需要给出4条信息:
+* 唯一的触发器名,触发器名必须在每个表中唯一，但不是在每个数据库中唯一;
+* 触发器关联的表，只有表才支持触发器，视图不支持(临时表也不支持);
+* 触发器应该响应的活动(DELETE、INSERT或UPDATE);
+* 触发器何时执行(处理之前或之后)。
+```SQL
+    create trigger newproduct after insert/update/delete on products for each row select 'product added';
+    create trigger newproduct before insert/update/delete on products for each row select 'product added';
+    drop trigger newproduct; --触发器不能更新或覆盖
+```
+create trigger用来创建名为newproduct的新触发器。触发器可在一个操作发生之前或之后执行，这里给出了AFTER INSERT， 所以此触发器将在INSERT语句成功执行后执行。这个触发器还指定FOR EACH ROW，因此代码对每个插入行执行。在这个例子中，文本Product added将对每个插入的行显示一次。
+
+## 全球化和本地化
+介绍MySQL处理不同字符集和语言的基础知识。
+数据库表被用来存储和检索数据。不同的语言和字符集需要以不同的方式存储和检索。因此，MySQL需要适应不同的字符集(不同的字母和字符)，适应不同的排序和检索数据的方法。
+MySQL支持众多的字符集。为查看所支持的字符集完整列表，使用以下语句: show character set; 这条语句显示所有可用的字符集以及每个字符集的描述和默认校对。
+查看所支持校对的完整列表 show collation;
 
 
+## 安全管理
+给用户提供他们所需的访问权，且仅提供他们所需的访问权。这就是所谓的访问控制，管理访问控制需要创建和管理用户账号。
+```SQL
+    select * from user;
+    create user A identified by 'p@qqqqq'
+```
+## 数据库维护
 
+## 改善性能
