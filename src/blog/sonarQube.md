@@ -16,3 +16,6 @@ Sonar可以从以下七个维度检测代码质量，而作为开发人员至少
 SonarLint vscode插件，https://www.sonarqube.org/sonarlint/，但是需要自己安装 Java Runtime (JRE) 11+环境，比较麻烦。
 
 eslint-plugin-sonarjs： https://github.com/SonarSource/eslint-plugin-sonarjs ，可以检测增量commit的重复func、重复常量等，具体见 github readme 的 rules。
+
+SonarQube 和 Vue <a href="https://zhuanlan.zhihu.com/p/461720764"></a>
+
