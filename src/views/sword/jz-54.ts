@@ -131,7 +131,7 @@ function KthNode1(pRoot, k){
 // 返回中序遍历第k个节点
 function KthNode(pRoot, k){
     if(!pRoot) {
-        return null;
+        return -1;
     }
     let stack = [];
     while(pRoot || stack.length) {
@@ -141,13 +141,12 @@ function KthNode(pRoot, k){
         }
         if(stack.length) {
             pRoot = stack.pop();
-            console.log(pRoot.val)
             k--;
             if(k===0){
-                return pRoot;
+                return pRoot.val;
             }
             pRoot = pRoot.right;
         }
     }
-    return null;
+    return -1;
 }
