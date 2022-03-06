@@ -92,6 +92,8 @@ export default {
         console.log('Some text\nAnd some more\r\nAnd yet\rThis is the end'.split(/\r|\n|\r\n/));// str的末尾是否加换行符会影响结果
         console.log('Some text\nAnd some more\r\nAnd yet\rThis is the end\n'.split(/\r|\n|\r\n/));
 
+        /^[^\uff0c|\u0020|\u3000]+$/.test('，dsdf'); //false 不允许输入中文逗号、半角空格、全角空格
+
         /*
         字符类别:
         . 匹配任意单个字符 行结束符除外：\n \r \u2028 或 \u2029
