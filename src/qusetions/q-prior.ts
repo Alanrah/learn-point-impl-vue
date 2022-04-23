@@ -250,9 +250,6 @@ function debounce(fn, wait) {
 // 考点：padding计算 flex grid
 
 
-// 实现一个Promise
-
-
 // infinite scroll，可分为使用框架or不使用框架
 // 加分项：
 // dom回收
