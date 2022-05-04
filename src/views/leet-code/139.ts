@@ -15,3 +15,25 @@ var wordBreak = function(s, wordDict) {
     }
     return dp[s.length];
 };
+
+var wordBreak = function(s, wordDict) {
+    if (!s || !s.length || !wordDict) return false;
+    const wordSet = new Set(wordDict);
+    const memo = new Map(); // {startIndex: false}
+
+    function canBreak(start) {
+        if (memo.has(start)) return memo.get(start);
+        if (start === s.length) return true;
+        for (let i = start; i < s.length; ++i) {
+            const temp = s.substring(start, i + 1);
+            if (wordSet.has(temp) && canBreak(i + 1)) {
+                memo.set(start, true);
+                return true;
+            }
+        }
+        memo.set(start, false);
+        return false;
+    }
+
+    return canBreak(0);
+};

@@ -21,7 +21,7 @@ for (var i = 0; i < 3; i++) {
 
 // 3 变量提升、函数提升
 var a = 99;            // 全局变量a
-f();                   // f是函数，虽然定义在调用的后面，但是函数声明会提升到作用域的顶部。 
+f();                   // f是函数，虽然定义在调用的后面，但是函数声明会提升到作用域的顶部。
 console.log(a);        // a=>99,  此时是全局变量的a
 function f () {
     console.log(a);      // 当前的a变量是下面变量a声明提升后，默认值undefined
@@ -77,14 +77,14 @@ console.log(o.c); // undefined
 // o.__proto__ === Foo.prototype； false
 // 去掉return之后，输出是 1，7，8，此时 o.a是1，o.__proto__.a 是 6，就近返回了 o.a
 
-// 7 js的数据结构，对象引用和值引用 
+// 7 js的数据结构，对象引用和值引用
 // 需要注意，传引用，重新赋值和改变属性的区别
 var a = [1, 2, 3, 4];
 function set (a) {
     a = [5, 6, 7, 8]; // 重新赋值了，与上面的a断开了链接，这个a指向了新的内存地址。假如这儿是  a [0] = 0; ，那么两个a不会断开链接，都会变成[0, 2, 3, 4]
     console.log(a)
 }
-set(a); // [5, 6, 7, 8];  
+set(a); // [5, 6, 7, 8];
 console.log(a); // [1, 2, 3, 4]
 var b = 1;
 function set1 (b) { // 基本类型参数的传递与基本类型的复制一样，传递的是变量值。
@@ -253,16 +253,20 @@ function eventLoop () {
         process.nextTick(resolve);
     }).then(() => console.log('promise.then'));
 
-    process.nextTick(() => { // process.nextTick 创建的是微任务
-        console.log('nextTick');
-    });
-
     setImmediate(() => { // setImmediate设计为一旦在当前轮询阶段完成， 就执行脚本
         console.log('immediate');
     });
+
+    process.nextTick(() => { // process.nextTick 创建的是微任务
+        console.log('nextTick');
+    });
 }
 /*
-'init promise' 'nextTick' 'promise.then' 'immediate' 'quick timer' 
+init promise
+nextTick
+promise.then
+quick timer
+immediate
 浏览器为了实现网络请求等操作不阻塞页面渲染，实现了多进程架构。渲染进程为了防止JavaScript执行造成页面卡死，实现了多线程架构以及事件循环系统。事件循环系统为了精确任务执行的时间，创建了微任务队列。
 
 在Node中除了定时器setTimeout，Promise，新增了setImmediate、process.nextTick等异步API以及一些网络I / O、文件I / O操作。需要理解的是这些API创建的回调函数的执行顺序
@@ -270,14 +274,91 @@ function eventLoop () {
 
 事件循环的几个阶段：
 - timers(定时器)：这阶段执行`setTimeout`和`setInterval`调度的回调；
-- pending callbacks(待定回调)：推迟到下一次循环迭代执行I / O回调；
+- pending callbacks/IO callbacks(待定回调)：推迟到下一次循环迭代执行I / O回调；
 - idle, prepare：只能内部使用；
 - poll(轮询)：检索新的I / O事件; 执行I / O相关回调(除了close callbacks以外, 大多数是定时器调度, 和`setImmediate()`), 当运行时候适当条件下nodejs会占用阻塞；
 - check(检测)：setImmediate()回调就在这执行；
 - close callbacks(关闭回调)： 一些关闭回调, 例如`socket.on('close', ...)；
 
 在宏任务执行完成时会执行微任务队列，即process.nextTick/Promise调度的函数。需要注意的是：在同一个函数中创建的微任务，process.nextTick总是比Promise先执行
+
+
+1. 宏任务：当前调用栈中执行的代码成为宏任务。（主代码快，定时器等等）。
+2.微任务： 当前（此次事件循环中）宏任务执行完，在下一个宏任务开始之前需要执行的任务,可以理解为回调事件。（promise.then，proness.nextTick等等）。 3. 宏任务中的事件放在callback queue中，由事件触发线程维护；微任务的事件放在微任务队列中，由js引擎线程维护。
+微任务和宏任务皆为异步任务，它们都属于一个队列，主要区别在于他们的执行顺序，Event Loop的走向和取值。
+运行机制
+1. 在执行栈中执行一个宏任务。
+2. 执行过程中遇到微任务，将微任务添加到微任务队列中。
+3. 当前宏任务执行完毕，立即执行微任务队列中的任务。
+4. 当前微任务队列中的任务执行完毕，检查渲染，GUI线程接管渲染。
+5. 渲染完毕后，js线程接管，开启下一次事件循环，执行下一次宏任务（事件队列中取）。
+微任务：process.nextTick、MutationObserver、Promise.then catch finally
+宏任务：I/O、setTimeout、setInterval、setImmediate、requestAnimationFrame
+宏任务                浏览器          Node
+I/O               ✅  ✅
+setTimeout        ✅  ✅
+setInterval        ✅  ✅
+setImmediate           ❌  ✅
+requestAnimationFrame                ✅  ✅
+
+微任务
+process.nextTick              ❌  ✅
+MutationObserver              ✅  ❌
+Promise.then catch finally                  ✅  ✅
 */
+async function async1() {
+    console.log('async1 start')
+    await async2()
+    console.log('async1 end')
+  }
+  async function async2() {
+    console.log('async2')
+  }
+  console.log('script start')
+  setTimeout(function() {
+    console.log('setTimeout0')
+  }, 0)
+  setTimeout(function() {
+    console.log('setTimeout3');
+    new Promise(function(resolve) {
+        console.log('setTimeout3 promise01')
+        resolve()
+        console.log('setTimeout3 promise02')
+      }).then(function() {
+        console.log('setTimeout3 promise03')
+      })
+  }, 3)
+  setImmediate(() => console.log('setImmediate'))
+  process.nextTick(() => console.log('nextTick'))
+  async1()
+  new Promise(function(resolve) {
+    console.log('promise1')
+    resolve()
+    console.log('promise2')
+  }).then(function() {
+    console.log('promise3')
+  })
+  console.log('script end')
+  // 结果
+    // script start
+    // async1 start
+    // async2
+    // promise1
+    // promise2
+    // script end
+    // nextTick
+    // async1 end
+    // promise3
+    // setTimeout0
+    // setImmediate
+    // setTimeout3
+    // setTimeout3 promise01
+    // setTimeout3 promise02
+    // setTimeout3 promise03
+
+    // 微任务和宏任务的联系,为什么有微任务，微任务和宏任务的区别
+    // http://www.inode.club/node/event_loop.html#详细讲解
+    // https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick/#setimmediate-vs-settimeout
 
 // 13 Node.js中如何简单的判断一个文件是否存在？
 const fs = require('fs');
@@ -337,7 +418,42 @@ function countsNodes (root) {
     return 1 + countsNodes(root.left) + countsNodes(root.right);
 }
 
-// 深度遍历、广度遍历
+// 广度遍历
+function PrintFromTopToBottom(root) {
+    const result = [];
+    const queue = [];
+    if (root) {
+      queue.push(root);
+      while (queue.length > 0) {
+        const current = queue.shift();
+        if (current.left) {
+          queue.push(current.left);
+        }
+        if (current.right) {
+          queue.push(current.right);
+        }
+        result.push(current.val);
+      }
+    }
+    return result;
+  }
+// 深度遍历 http://www.conardli.top/docs/algorithm/DFS%E5%92%8CBFS/DFS%E5%92%8CBFS.html#%E6%B7%B1%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2
+// 中序遍历就是深度遍历
+var inorderTraversal = function (root) {
+    const result = [];
+    const stack = [];
+    let current = root;
+    while (current || stack.length > 0) {
+      while (current) {
+        stack.push(current);
+        current = current.left;
+      }
+      current = stack.pop();
+      result.push(current.val);
+      current = current.right;
+    }
+    return result;
+  };
 
 // 16 转化为驼峰命名 'get-element-by-id' 转换为 getElementById'  string是不可变的，只能通过将其改造然后换值
 const str = 'get-element-by-id';

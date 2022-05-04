@@ -95,13 +95,70 @@ Array(10).fill(1).forEach(() => {
 
 
 // 随机生成一个合法的css颜色值 如 #c1c1c1
-
+function color() {
+    const x = ['a', 'b', 'c', 'd', 'e', 'f', '0','1','2','3','4','5','6','7','8','9'];
+    let str = '#';
+    let temp = 0;
+    for(let i = 0;i<6;i++) {
+        temp = Math.floor(Math.random() * 15);
+        str += x[temp];
+    }
+    return str;
+    // return '#'+Math.floor(Math.random()*0xffffff).toString(16);
+}
+function Color2(){
+    this.r = Math.floor(Math.random()*255);
+    this.g = Math.floor(Math.random()*255);
+    this.b = Math.floor(Math.random()*255);
+    this.color = 'rgba('+ this.r +','+ this.g +','+ this.b +',0.8)';
+}
+//颜色对象
+function Color3(){
+    this.colorAngle = Math.floor(Math.random()*360);
+    this.color = 'hsla('+ this.colorAngle +',100%,50%,1)';
+}
 
 
 
 // 实现EventEmitter类，需要实现on, off, once, trigger几个方法
 // 主要考察考虑问题的全面性，api设计是否优雅 及 代码习惯
+class eventEmitter{
+    events: Map<string, Array<any>>;
+    constructor(){
+        this.events = new Map();
+    }
+    on(event, listener) {
+        if(this.events.get(event)) {
+            this.events.get(event).push(listener)
+        } else {
+            this.events.set(event, [listener]);
+        }
+    }
+    emit(event, ...args) {
+        if(this.events.has(event)){
+            const fns = this.events.get(event);
+            fns.forEach(fn => fn(...args));
+        }
+    }
+    off(event, listener) {
+        if(this.events.has(event)){
+           let fns = this.events.get(event);
+           fns = fns.filter(fn => { return fn === listener || fn === listener.originFn;})
+           this.events.set(event, fns);
+            // 或者 fns.splice(fns?.indexOf(listener || listener.originFn), 1);
+        }
+    }
+    once(event, listener) {
+        const cb = (...args) => {
+            // 只能执行一次，所以执行完后要调用off
+            listener(...args);
+            this.off(event, cb);
+        }
+        cb.originFn = listener;
+        this.on(event, cb);
+    }
 
+}
 
 
 // abc全排列
