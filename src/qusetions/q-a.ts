@@ -300,11 +300,15 @@ setTimeout        ✅  ✅
 setInterval        ✅  ✅
 setImmediate           ❌  ✅
 requestAnimationFrame                ✅  ✅
+UI rendering
+script：script
 
 微任务
 process.nextTick              ❌  ✅
 MutationObserver              ✅  ❌
 Promise.then catch finally                  ✅  ✅
+postMessgae:window 对象通信的一个方法
+Object.observe:监听对象变化的一个方法
 */
 async function async1() {
     console.log('async1 start')
